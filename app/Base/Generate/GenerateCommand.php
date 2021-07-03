@@ -23,4 +23,22 @@ class GenerateCommand extends ConsoleCommand
             exit();
         }
     }
+
+    public function createFile( string $argument, string $namespace, string $stubFileName ): void
+    {
+        $argumentName = ucfirst( $this->argument( $argument ) );
+        $fileName = lcfirst( "$namespace\\$argumentName.php" );
+        if ( FilesystemHelper::existsFile( $fileName ) ) {
+            $this->error( $fileName . ' already exists!' );
+
+            exit();
+        }
+
+        $contentNewFile = $this->parseStubFile(
+            $argumentName,
+            $namespace,
+            $stubFileName
+        );
+        FilesystemHelper::createFile( $fileName, $contentNewFile );
+    }
 }

@@ -18,24 +18,10 @@ class GenerateController extends GenerateCommand
 
         $type = ucfirst( strtolower( $this->choice( 'Specify the controller type', [ 'Api', 'Web', 'Console' ] ) ) );
 
-        $controller = ucfirst( $this->argument( 'controller' ) );
-        $namespace = "App\Containers\\$container\Controllers\\$type";
-        $nameController = lcfirst( "$namespace\\$controller.php" );
-        if ( FilesystemHelper::existsFile( $nameController ) ) {
-            $this->error( $nameController . ' already exists!' );
-            return;
-        }
-
         FilesystemHelper::createDir( "app/Containers/$container/Controllers" );
         FilesystemHelper::createDir( "app/Containers/$container/Controllers/" . ucfirst( $type ) );
 
-        $contentController = $this->parseStubFile(
-            $controller,
-            $namespace,
-            'controller.' . strtolower( $type )
-        );
-        FilesystemHelper::createFile( $nameController, $contentController );
-
+        $this->createFile( 'controller', "App\Containers\\$container\Controllers\\$type", 'controller.' . strtolower( $type ) );
         $this->info( 'Controller created!' );
     }
 }
