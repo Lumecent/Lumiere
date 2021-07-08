@@ -1,0 +1,13 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Abstractions\Repositories\Repository;
+
+class {{ class }} extends Repository
+{
+    protected static function getModelClass(): string
+    {
+        return Model::class;
+    }
+}
