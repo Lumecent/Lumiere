@@ -9,6 +9,18 @@ class GenerateCommand extends ConsoleCommand
 {
     private string $stubPath = 'app/Base/Generate/Stubs';
 
+    protected function interactiveMode(): void
+    {
+    }
+
+    protected function silentMode(): void
+    {
+    }
+
+    protected function processGenerateFile( $params ): void
+    {
+    }
+
     public function parseStubFile( string $className, string $namespace, string $stubFileName ): string
     {
         $content = FilesystemHelper::getContentFile( "$this->stubPath/$stubFileName.stub" );
