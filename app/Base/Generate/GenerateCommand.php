@@ -21,6 +21,16 @@ class GenerateCommand extends ConsoleCommand
     {
     }
 
+    public function handle(): void
+    {
+        if ( $this->argument( 'mode' ) === 'interactive' ) {
+            $this->interactiveMode();
+        }
+        else {
+            $this->silentMode();
+        }
+    }
+
     public function parseStubFile( string $className, string $namespace, string $stubFileName ): string
     {
         $content = FilesystemHelper::getContentFile( "$this->stubPath/$stubFileName.stub" );
