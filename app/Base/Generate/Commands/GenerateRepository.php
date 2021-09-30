@@ -7,14 +7,13 @@ use App\Base\Helpers\FilesystemHelper;
 
 class GenerateRepository extends GenerateCommand
 {
-    protected $signature = 'lumiere:repository {repository}';
+    protected $signature = 'lumiere:repository {repository} {mode=interactive} {container?}';
 
     protected $description = 'Create a new repositories';
 
-    public function handle(): void
+    protected function processGenerateFile( $params ): void
     {
-        $container = ucfirst( strtolower( $this->ask( 'Specify the container name' ) ) );
-        $this->checkContainer( $container );
+        [ $container ] = $params;
 
         FilesystemHelper::createDir( "app/Containers/$container/Repositories" );
 

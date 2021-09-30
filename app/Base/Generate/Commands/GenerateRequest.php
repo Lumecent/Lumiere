@@ -7,14 +7,13 @@ use App\Base\Helpers\FilesystemHelper;
 
 class GenerateRequest extends GenerateCommand
 {
-    protected $signature = 'lumiere:request {request}';
+    protected $signature = 'lumiere:request {request} {mode=interactive} {container?}';
 
     protected $description = 'Create a new requests';
 
-    public function handle(): void
+    protected function processGenerateFile( $params ): void
     {
-        $container = ucfirst( strtolower( $this->ask( 'Specify the container name' ) ) );
-        $this->checkContainer( $container );
+        [ $container ] = $params;
 
         FilesystemHelper::createDir( "app/Containers/$container/Requests" );
 

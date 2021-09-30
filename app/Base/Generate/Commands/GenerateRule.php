@@ -7,14 +7,13 @@ use App\Base\Helpers\FilesystemHelper;
 
 class GenerateRule extends GenerateCommand
 {
-    protected $signature = 'lumiere:rule {rule}';
+    protected $signature = 'lumiere:rule {rule} {mode=interactive} {container?}';
 
     protected $description = 'Create a new rules';
 
-    public function handle(): void
+    protected function processGenerateFile( $params ): void
     {
-        $container = ucfirst( strtolower( $this->ask( 'Specify the container name' ) ) );
-        $this->checkContainer( $container );
+        [ $container ] = $params;
 
         FilesystemHelper::createDir( "app/Containers/$container/Rules" );
 
