@@ -9,6 +9,40 @@ class GenerateCommand extends ConsoleCommand
 {
     private string $stubPath = 'app/Base/Generate/Stubs';
 
+    protected function interactiveMode(): void
+    {
+        $container = ucfirst( strtolower( $this->ask( 'Specify the container name' ) ) );
+        $this->checkContainer( $container );
+
+        $this->processGenerateFile( [ $container ] );
+    }
+
+    protected function silentMode(): void
+    {
+        $container = ucfirst( strtolower( $this->argument( 'container' ) ) );
+        if ( !$container ) {
+            $this->error( "Enter container name!" );
+
+            exit();
+        }
+
+        $this->processGenerateFile( [ $container ] );
+    }
+
+    protected function processGenerateFile( $params ): void
+    {
+    }
+
+    public function handle(): void
+    {
+        if ( $this->argument( 'mode' ) === 'interactive' ) {
+            $this->interactiveMode();
+        }
+        else {
+            $this->silentMode();
+        }
+    }
+
     public function parseStubFile( string $className, string $namespace, string $stubFileName ): string
     {
         $content = FilesystemHelper::getContentFile( "$this->stubPath/$stubFileName.stub" );

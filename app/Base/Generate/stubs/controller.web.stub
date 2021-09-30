@@ -26,7 +26,7 @@ class {{ class }} extends WebController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  WebRequest  $request
+     * @param WebRequest $request
      */
     public function store(WebRequest $request)
     {
@@ -36,7 +36,7 @@ class {{ class }} extends WebController
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      */
     public function show(int $id)
     {
@@ -46,7 +46,7 @@ class {{ class }} extends WebController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      */
     public function edit(int $id)
     {
@@ -56,8 +56,8 @@ class {{ class }} extends WebController
     /**
      * Update the specified resource in storage.
      *
-     * @param  WebRequest  $request
-     * @param  int  $id
+     * @param WebRequest $request
+     * @param int $id
      */
     public function update(WebRequest $request, int $id)
     {
@@ -67,7 +67,7 @@ class {{ class }} extends WebController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      */
     public function destroy(int $id)
     {

@@ -21,7 +21,7 @@ class {{ class }} extends ApiController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  ApiRequest  $request
+     * @param ApiRequest $request
      * @return ApiResponse
      */
     public function store(ApiRequest $request): ApiResponse
@@ -32,7 +32,7 @@ class {{ class }} extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return ApiResponse
      */
     public function show(int $id): ApiResponse
@@ -43,8 +43,8 @@ class {{ class }} extends ApiController
     /**
      * Update the specified resource in storage.
      *
-     * @param  ApiRequest  $request
-     * @param  int  $id
+     * @param ApiRequest $request
+     * @param int $id
      * @return ApiResponse
      */
     public function update(ApiRequest $request, int $id): ApiResponse
@@ -55,7 +55,7 @@ class {{ class }} extends ApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return ApiResponse
      */
     public function destroy(int $id): ApiResponse
