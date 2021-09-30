@@ -11,10 +11,22 @@ class GenerateCommand extends ConsoleCommand
 
     protected function interactiveMode(): void
     {
+        $container = ucfirst( strtolower( $this->ask( 'Specify the container name' ) ) );
+        $this->checkContainer( $container );
+
+        $this->processGenerateFile( [ $container ] );
     }
 
     protected function silentMode(): void
     {
+        $container = ucfirst( strtolower( $this->argument( 'container' ) ) );
+        if ( !$container ) {
+            $this->error( "Enter container name!" );
+
+            exit();
+        }
+
+        $this->processGenerateFile( [ $container ] );
     }
 
     protected function processGenerateFile( $params ): void
