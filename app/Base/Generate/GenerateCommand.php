@@ -43,10 +43,13 @@ class GenerateCommand extends ConsoleCommand
         }
     }
 
-    public function parseStubFile( string $className, string $namespace, string $stubFileName ): string
+    public function parseStubFile( array $replaces, string $stubFileName ): string
     {
+        $search = array_keys( $replaces );
+        $replace = array_values( $replaces );
+
         $content = FilesystemHelper::getContentFile( "$this->stubPath/$stubFileName.stub" );
-        return str_replace( [ '{{ class }}', '{{ namespace }}' ], [ $className, $namespace ], $content );
+        return str_replace( $search, $replace, $content );
     }
 
     public function checkContainer( string $container ): void
@@ -58,21 +61,24 @@ class GenerateCommand extends ConsoleCommand
         }
     }
 
-    public function createFile( string $argument, string $namespace, string $stubFileName ): void
+    public function createFile( array $params, string $stubFileName ): void
     {
-        $argumentName = ucfirst( $this->argument( $argument ) );
-        $fileName = lcfirst( "$namespace\\$argumentName.php" );
+        [ $argument, $namespace ] = $params;
+
+        $className = ucfirst( $this->argument( $argument ) );
+        $fileName = lcfirst( "$namespace\\$className.php" );
         if ( FilesystemHelper::existsFile( $fileName ) ) {
             $this->error( $fileName . ' already exists!' );
 
             exit();
         }
 
-        $contentNewFile = $this->parseStubFile(
-            $argumentName,
-            $namespace,
-            $stubFileName
-        );
+        $replaces = [
+            '{{ class }}' => $className,
+            '{{ namespace }}' => $namespace
+        ];
+
+        $contentNewFile = $this->parseStubFile( $replaces, $stubFileName );
         FilesystemHelper::createFile( $fileName, $contentNewFile );
     }
 }

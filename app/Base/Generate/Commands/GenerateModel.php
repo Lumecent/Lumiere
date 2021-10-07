@@ -18,7 +18,7 @@ class GenerateModel extends GenerateCommand
 
         FilesystemHelper::createDir( "app/Containers/$container/Models" );
 
-        $this->createFile( 'model', "App\Containers\\$container\Models", 'model' );
+        $this->createFile( [ 'model', "App\Containers\\$container\Models" ], 'model' );
         $this->info( 'Model created!' );
 
         if ( $this->option( 'm' ) ) {

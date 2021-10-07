@@ -12,7 +12,7 @@ class GenerateConsole extends GenerateCommand
 
     public function handle(): void
     {
-        $this->createFile( 'console', 'App\Base\Commands', 'console' );
+        $this->createFile( [ 'console', 'App\Base\Commands' ], 'console' );
         $this->info( 'Command created!' );
     }
 }
