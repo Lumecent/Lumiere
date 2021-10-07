@@ -31,12 +31,12 @@ abstract class ConsoleKernel extends IlluminateConsoleKernel
 
     private function registerBaseCommands(): array
     {
-        return [ 'App/Base/Commands' ];
+        return [ 'app/Base/Commands' ];
     }
 
     private function registerGenerateCommands(): array
     {
-        return [ 'App/Base/Generate/Commands' ];
+        return [ 'app/Base/Generate/Commands' ];
     }
 
     private function registerContainersCommands(): array
