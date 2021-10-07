@@ -55,7 +55,7 @@ class GenerateFactory extends GenerateCommand
         $this->createFile( [
             'factory', "App\Containers\\$container\Data\Factories", $modelNamespace
         ], 'factory' );
-        $this->info( 'Model created!' );
+        $this->info( 'Factory created!' );
     }
 
     public function createFile( array $params, string $stubFileName ): void
