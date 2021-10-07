@@ -15,19 +15,15 @@ class MigrationsServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $migrationsDirsList = Cache::get( 'migrationsDirsList', function () {
-            $filesystem = new Filesystem();
-            $migrationsDirsList = [];
+        $filesystem = new Filesystem();
+        $migrationsDirsList = [];
 
-            foreach ( $filesystem->directories( app_path( 'Containers' ) ) as $directory ) {
-                $migrationsDir = $directory . '/Data/Migrations';
-                if ( $filesystem->isDirectory( $migrationsDir ) ) {
-                    $migrationsDirsList[] = $migrationsDir;
-                }
+        foreach ( $filesystem->directories( app_path( 'Containers' ) ) as $directory ) {
+            $migrationsDir = $directory . '/Data/Migrations';
+            if ( $filesystem->isDirectory( $migrationsDir ) ) {
+                $migrationsDirsList[] = $migrationsDir;
             }
-            Cache::put( 'migrationsDirsList', $migrationsDirsList, 120 );
-            return $migrationsDirsList;
-        } );
+        }
 
         $this->loadMigrationsFrom( $migrationsDirsList );
     }
