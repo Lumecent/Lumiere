@@ -63,41 +63,33 @@ class GenerateMigration extends GenerateCommand
             $stubFileName = 'migration.update';
         }
 
-        $this->createFile( 'migration', "App\Containers\\$container\Data\Migrations", $stubFileName );
+        $this->createFile( [ 'migration', "App\Containers\\$container\Data\Migrations" ], $stubFileName );
         $this->info( 'Migration created!' );
     }
 
-    public function handle(): void
+    public function createFile( array $params, string $stubFileName ): void
     {
-        if ( $this->argument( 'mode' ) === 'interactive' ) {
-            $this->interactiveMode();
-        }
-        else {
-            $this->silentMode();
-        }
-    }
+        [ $argument, $namespace ] = $params;
 
-    public function createFile( string $argument, string $namespace, string $stubFileName ): void
-    {
-        $argumentName = strtolower( $this->argument( $argument ) );
-        $tableName = "{$argumentName}s";
+        $className = strtolower( $this->argument( $argument ) );
+        $tableName = "{$className}s";
 
         if ( str_contains( $stubFileName, 'create' ) ) {
-            $fileName = lcfirst( $namespace . '\\' . Carbon::now()->format( 'Y_m_d_His' ) . "_create_{$argumentName}s_table.php" );
-            $argumentName = 'Create' . ucfirst( $argumentName ) . 'sTable';
+            $fileName = lcfirst( $namespace . '\\' . Carbon::now()->format( 'Y_m_d_His' ) . "_create_{$className}s_table.php" );
+            $className = 'Create' . ucfirst( $className ) . 'sTable';
         }
         else {
-            $fileName = lcfirst( $namespace . '\\' . Carbon::now()->format( 'Y_m_d_His' ) . "_update_{$argumentName}s_table.php" );
-            $argumentName = 'Update' . ucfirst( $argumentName ) . 'sTable';
+            $fileName = lcfirst( $namespace . '\\' . Carbon::now()->format( 'Y_m_d_His' ) . "_update_{$className}s_table.php" );
+            $className = 'Update' . ucfirst( $className ) . 'sTable';
         }
 
-        $contentNewFile = $this->parseStubFile(
-            $argumentName,
-            $namespace,
-            $stubFileName
-        );
+        $replaces = [
+            '{{ class }}' => $className,
+            '{{ namespace }}' => $namespace,
+            '{{ table }}' => $tableName
+        ];
 
-        $contentNewFile = str_replace( '{{ table }}', $tableName, $contentNewFile );
+        $contentNewFile = $this->parseStubFile( $replaces, $stubFileName );
         FilesystemHelper::createFile( $fileName, $contentNewFile );
     }
 }
