@@ -171,6 +171,7 @@ return [
          */
         App\Base\Providers\AppServiceProvider::class,
         App\Base\Providers\AuthServiceProvider::class,
+        App\Base\Providers\MigrationsServiceProvider::class,
         // App\Base\Providers\BroadcastServiceProvider::class,
         App\Base\Providers\EventServiceProvider::class,
         App\Base\Providers\RouteServiceProvider::class,
