@@ -17,7 +17,7 @@ class GenerateRequest extends GenerateCommand
 
         FilesystemHelper::createDir( "app/Containers/$container/Requests" );
 
-        $this->createFile( [ 'request', "App\Containers\\$container\Requests" ], 'request' );
+        $this->createFile( [ 'request', "App\Containers\\$container\Requests" ], 'request', 'Request' );
         $this->info( 'Request created!' );
     }
 }

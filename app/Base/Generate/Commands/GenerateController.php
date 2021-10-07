@@ -50,7 +50,7 @@ class GenerateController extends GenerateCommand
         FilesystemHelper::createDir( "app/Containers/$container/Controllers" );
         FilesystemHelper::createDir( "app/Containers/$container/Controllers/" . ucfirst( $type ) );
 
-        $this->createFile( [ 'controller', "App\Containers\\$container\Controllers\\$type" ], 'controller.' . strtolower( $type ) );
+        $this->createFile( [ 'controller', "App\Containers\\$container\Controllers\\$type" ], 'controller.' . strtolower( $type ), 'Controller' );
         $this->info( 'Controller created!' );
     }
 }
