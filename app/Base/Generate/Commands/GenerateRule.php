@@ -17,7 +17,7 @@ class GenerateRule extends GenerateCommand
 
         FilesystemHelper::createDir( "app/Containers/$container/Rules" );
 
-        $this->createFile( [ 'rule', "App\Containers\\$container\Rules" ], 'rule' );
+        $this->createFile( [ 'rule', "App\Containers\\$container\Rules" ], 'rule', 'Rule' );
         $this->info( 'Rule created!' );
     }
 }

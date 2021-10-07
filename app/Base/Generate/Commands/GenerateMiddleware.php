@@ -12,7 +12,7 @@ class GenerateMiddleware extends GenerateCommand
 
     public function handle(): void
     {
-        $this->createFile( [ 'middleware', 'App\Base\Middleware' ], 'middleware' );
+        $this->createFile( [ 'middleware', 'App\Base\Middleware' ], 'middleware', 'Middleware' );
         $this->info( 'Middleware created!' );
     }
 }

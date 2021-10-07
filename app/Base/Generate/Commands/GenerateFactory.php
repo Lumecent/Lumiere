@@ -54,21 +54,20 @@ class GenerateFactory extends GenerateCommand
 
         $this->createFile( [
             'factory', "App\Containers\\$container\Data\Factories", $modelNamespace
-        ], 'factory' );
-        $this->info( 'Model created!' );
+        ], 'factory', 'Factory' );
+        $this->info( 'Factory created!' );
     }
 
-    public function createFile( array $params, string $stubFileName ): void
+    public function createFile( array $params, string $stubFileName, string $classPostfix = '' ): void
     {
         [ $argument, $namespace, $modelNamespace ] = $params;
 
-        $argumentName = ucfirst( $this->argument( $argument ) );
-        $argumentName = "{$argumentName}Factory";
+        $className = ucfirst( $this->argument( $argument ) ) . $classPostfix;
 
         $modelNamespaceRaw = explode( '\\', $modelNamespace );
         $model = array_pop( $modelNamespaceRaw );
 
-        $fileName = "$namespace\\$argumentName";
+        $fileName = "$namespace\\$className";
         if ( class_exists( $fileName ) ) {
             $this->error( $fileName . ' already exists!' );
 
@@ -77,7 +76,7 @@ class GenerateFactory extends GenerateCommand
 
         $contentNewFile = $this->parseStubFile(
             [
-                '{{ class }}' => $argumentName,
+                '{{ class }}' => $className,
                 '{{ model }}' => $model,
                 '{{ factoryNamespace }}' => $namespace,
                 '{{ modelNamespace }}' => ucfirst( $modelNamespace )

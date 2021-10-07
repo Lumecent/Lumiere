@@ -67,7 +67,7 @@ class GenerateMigration extends GenerateCommand
         $this->info( 'Migration created!' );
     }
 
-    public function createFile( array $params, string $stubFileName ): void
+    public function createFile( array $params, string $stubFileName, string $classPostfix = '' ): void
     {
         [ $argument, $namespace ] = $params;
 

@@ -50,7 +50,7 @@ class GenerateRoute extends GenerateCommand
         FilesystemHelper::createDir( "app/Containers/$container/Routes" );
         FilesystemHelper::createDir( "app/Containers/$container/Routes/" . ucfirst( $type ) );
 
-        $this->createFile( [ 'route', "App\Containers\\$container\Routes\\$type" ], 'route.' . strtolower( $type ) );
+        $this->createFile( [ 'route', "App\Containers\\$container\Routes\\$type" ], 'route.' . strtolower( $type ), 'Route' );
         $this->info( 'Route created!' );
     }
 }
