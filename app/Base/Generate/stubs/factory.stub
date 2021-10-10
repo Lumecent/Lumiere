@@ -2,10 +2,10 @@
 
 namespace {{ factoryNamespace }};
 
-use App\Abstractions\Factories\Factory;
+use App\Abstractions\Factories\EloquentFactory;
 use {{ modelNamespace }};
 
-class {{ class }} extends Factory
+class {{ class }} extends EloquentFactory
 {
     /**
      * The name of the factory's corresponding model.
