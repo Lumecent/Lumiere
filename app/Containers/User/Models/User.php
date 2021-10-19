@@ -2,12 +2,12 @@
 
 namespace App\Containers\User\Models;
 
+use App\Abstractions\Models\Auth;
 use App\Containers\User\Data\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Auth
 {
     use HasFactory, Notifiable;
 
