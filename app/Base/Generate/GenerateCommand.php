@@ -3,7 +3,7 @@
 namespace App\Base\Generate;
 
 use App\Abstractions\Commands\ConsoleCommand;
-use App\Base\Helpers\FilesystemHelper;
+use App\Utilities\Helpers\FilesystemHelper;
 
 class GenerateCommand extends ConsoleCommand
 {

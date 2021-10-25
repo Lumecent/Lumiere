@@ -12,7 +12,7 @@ class ConsoleKernel extends AbstractConsoleKernel
      *
      * @var array
      */
-    protected array $commands = [
+    protected $commands = [
         //
     ];
 

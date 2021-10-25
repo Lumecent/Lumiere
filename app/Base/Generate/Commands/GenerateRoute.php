@@ -3,7 +3,7 @@
 namespace App\Base\Generate\Commands;
 
 use App\Base\Generate\GenerateCommand;
-use App\Base\Helpers\FilesystemHelper;
+use App\Utilities\Helpers\FilesystemHelper;
 
 class GenerateRoute extends GenerateCommand
 {
