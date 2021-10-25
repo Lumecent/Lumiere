@@ -65,7 +65,7 @@ class GenerateCommand extends ConsoleCommand
     {
         [ $argument, $namespace ] = $params;
 
-        $className = ucfirst( $this->argument( $argument ) ) . ucfirst($classPostfix);
+        $className = ucfirst( $this->argument( $argument ) ) . ucfirst( $classPostfix );
         $fileName = lcfirst( "$namespace\\$className" );
         if ( class_exists( $fileName ) ) {
             $this->error( $fileName . ' already exists!' );
@@ -79,6 +79,6 @@ class GenerateCommand extends ConsoleCommand
         ];
 
         $contentNewFile = $this->parseStubFile( $replaces, $stubFileName );
-        FilesystemHelper::createFile( "$fileName.php", $contentNewFile );
+        FilesystemHelper::createFile( str_replace( '\\', '/', $fileName ) . ".php", $contentNewFile );
     }
 }

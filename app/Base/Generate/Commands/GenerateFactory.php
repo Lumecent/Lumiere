@@ -84,7 +84,7 @@ class GenerateFactory extends GenerateCommand
             $stubFileName
         );
 
-        FilesystemHelper::createFile( "$fileName.php", $contentNewFile );
+        FilesystemHelper::createFile( str_replace( '\\', '/', $fileName ) . ".php", $contentNewFile );
     }
 
     private function checkModel( $modelPath ): void

@@ -90,6 +90,6 @@ class GenerateMigration extends GenerateCommand
         ];
 
         $contentNewFile = $this->parseStubFile( $replaces, $stubFileName );
-        FilesystemHelper::createFile( $fileName, $contentNewFile );
+        FilesystemHelper::createFile( str_replace( '\\', '/', $fileName ), $contentNewFile );
     }
 }
