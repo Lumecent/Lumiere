@@ -8,14 +8,17 @@ abstract class CreateObjectFactory
 {
     protected array $aliases = [];
 
-    protected static ?self $instance = null;
+    protected static array $instances = [];
 
     public static function create(): static
     {
-        if ( is_null( self::$instance ) ) {
-            self::$instance = new static;
+        $staticClass = static::class;
+        if ( array_key_exists( $staticClass, self::$instances ) ) {
+            return self::$instances[ $staticClass ];
         }
-        return self::$instance;
+        self::$instances[ $staticClass ] = new static();
+
+        return self::$instances[ $staticClass ];
     }
 
     public function __construct()

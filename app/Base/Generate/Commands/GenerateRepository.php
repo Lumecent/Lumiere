@@ -17,7 +17,7 @@ class GenerateRepository extends GenerateCommand
 
         FilesystemHelper::createDir( "app/Containers/$container/Repositories" );
 
-        $this->createFile( [ 'repository', "app\Containers\\$container\Repositories" ], 'repository', 'Repository' );
+        $this->createFile( [ 'repository', "App\Containers\\$container\Repositories" ], 'repository', 'Repository' );
         $this->info( 'Repository created!' );
     }
 }

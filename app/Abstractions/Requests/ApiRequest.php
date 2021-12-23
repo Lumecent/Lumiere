@@ -2,7 +2,7 @@
 
 namespace App\Abstractions\Requests;
 
-abstract class ApiRequest extends Request
+class ApiRequest extends WebRequest
 {
 
 }
