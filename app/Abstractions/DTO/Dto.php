@@ -2,22 +2,28 @@
 
 namespace App\Abstractions\DTO;
 
+use App\Abstractions\Requests\Request;
 use InvalidArgumentException;
 
 abstract class Dto
 {
     public function fromArray( array $params ): Dto
     {
-        $dto_properties = get_class_vars( static::class );
+        $dtoProperties = get_class_vars( static::class );
 
-        foreach ( $dto_properties as $dto_property => $value ) {
-            if ( array_key_exists( $dto_property, $params ) ) {
-                $this->$dto_property = $params[ $dto_property ];
+        foreach ( $dtoProperties as $dtoProperty => $value ) {
+            if ( array_key_exists( $dtoProperty, $params ) ) {
+                $this->$dtoProperty = $params[ $dtoProperty ];
             }
             else {
-                throw new InvalidArgumentException( "$dto_property not found in params array" );
+                throw new InvalidArgumentException( "$dtoProperty not found in params array" );
             }
         }
         return $this;
+    }
+
+    public function fromRequest( Request $request ): Dto
+    {
+        return $this->fromArray( $request->all() );
     }
 }
