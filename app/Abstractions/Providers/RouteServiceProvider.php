@@ -2,9 +2,7 @@
 
 namespace App\Abstractions\Providers;
 
-use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
-
-abstract class RouteServiceProvider extends IlluminateServiceProvider
+abstract class RouteServiceProvider extends ServiceProvider
 {
     abstract public function routes(): void;
 
