@@ -2,6 +2,7 @@
 
 namespace App\Abstractions\Repositories;
 
+use App\Abstractions\Entity\Entity;
 use App\Abstractions\Models\Model;
 
 abstract class Repository
@@ -13,4 +14,6 @@ abstract class Repository
     }
 
     abstract protected static function getModelClass(): string;
+
+    abstract protected static function getEntity( Model $model ): Entity;
 }
