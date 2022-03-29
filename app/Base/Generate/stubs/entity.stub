@@ -1,0 +1,10 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Abstractions\Entities\Entity;
+
+class {{ class }} extends Entity
+{
+
+}
