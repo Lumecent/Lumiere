@@ -1,0 +1,13 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Abstractions\Providers\ServiceProvider;
+
+class {{ class }} extends ServiceProvider
+{
+    public function register(): void
+    {
+
+    }
+}
