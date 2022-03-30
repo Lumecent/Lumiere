@@ -11,7 +11,7 @@ class GenerateCommand extends ConsoleCommand
 
     protected function interactiveMode(): void
     {
-        $container = ucfirst( strtolower( $this->ask( 'Specify the container name' ) ) );
+        $container = ucfirst( $this->ask( 'Specify the container name' ) );
         $this->checkContainer( $container );
 
         $this->processGenerateFile( [ $container ] );
@@ -19,7 +19,7 @@ class GenerateCommand extends ConsoleCommand
 
     protected function silentMode(): void
     {
-        $container = ucfirst( strtolower( $this->argument( 'container' ) ) );
+        $container = ucfirst( $this->argument( 'container' ) );
         if ( !$container ) {
             $this->error( "Enter container name!" );
 
@@ -65,7 +65,16 @@ class GenerateCommand extends ConsoleCommand
     {
         [ $argument, $namespace ] = $params;
 
-        $className = ucfirst( $this->argument( $argument ) ) . ucfirst( $classPostfix );
+        if ( $argument ) {
+            $className = ucfirst( $this->argument( $argument ) ) . ucfirst( $classPostfix );
+        }
+        else {
+            $classPath = explode( '\\', $namespace );
+            $className = array_pop( $classPath ) . ucfirst( $classPostfix );
+
+            $namespace = implode( '\\', $classPath );
+        }
+
         if ( str_contains( $className, '/' ) ) {
             $directories = explode( '/', $className );
 
