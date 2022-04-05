@@ -4,11 +4,10 @@ namespace App\Base\Generate\Commands;
 
 use App\Base\Generate\GenerateCommand;
 use App\Utilities\Helpers\FilesystemHelper;
-use Illuminate\Support\Facades\Artisan;
 
 class GenerateFactories extends GenerateCommand
 {
-    protected $signature = 'lumiere:factories {factories} {mode=interactive} {container?} {--m}';
+    protected $signature = 'lumiere:factories {factories} {mode=interactive} {container?}';
 
     protected $description = 'Create a new factories';
 
