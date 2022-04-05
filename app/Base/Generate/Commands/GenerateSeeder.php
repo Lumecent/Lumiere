@@ -16,7 +16,7 @@ class GenerateSeeder extends GenerateCommand
         [ $container ] = $params;
 
         FilesystemHelper::createDir( "app/Containers/$container/Data" );
-        FilesystemHelper::createDir( "app/Containers/$container/Seeders" );
+        FilesystemHelper::createDir( "app/Containers/$container/Data/Seeders" );
 
         $this->createFile( [ 'seeder', "App\Containers\\$container\Data\Seeders" ], 'seeder', 'Seeder' );
         $this->info( 'Seeder created!' );
