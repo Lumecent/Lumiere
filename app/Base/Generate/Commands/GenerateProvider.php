@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Artisan;
 
 class GenerateProvider extends GenerateCommand
 {
-    protected $signature = 'lumiere:provider {provider} {mode=interactive} {container?} {--m}';
+    protected $signature = 'lumiere:provider {provider} {mode=interactive} {container?}';
 
     protected $description = 'Create a new providers';
 
