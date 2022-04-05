@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 class GenerateMigration extends GenerateCommand
 {
-    protected $signature = 'lumiere:migration {migration} {mode=interactive} {container?} {type?}';
+    protected $signature = 'lumiere:migration {migration} {mode=interactive} {container?} {type?*}';
 
     protected $description = 'Create a new migration';
 
@@ -32,18 +32,20 @@ class GenerateMigration extends GenerateCommand
         }
         $this->checkContainer( $container );
 
-        $type = strtolower( $this->argument( 'type' ) );
-        if ( !in_array( $type, [ 'create', 'update' ] ) ) {
+        $argument = $this->argument( 'type' );
+        if ( is_array( $argument ) ) {
+            $argument = array_map( static fn( string $string ) => strtolower( $string ), $argument );
+
+            $type = implode( ' ', $argument );
+        }
+        else {
+            $type = strtolower( $argument );
+        }
+
+        if ( !in_array( $type, [ 'create table', 'update table' ] ) ) {
             $this->error( 'Migration type should be "create" or "update"' );
 
             exit();
-        }
-
-        if ( $type === 'create' ) {
-            $type = 'Create Table';
-        }
-        else {
-            $type = 'Update Table';
         }
 
         $this->processGenerateFile( [ $type, $container ] );
@@ -71,15 +73,15 @@ class GenerateMigration extends GenerateCommand
     {
         [ $argument, $namespace ] = $params;
 
-        $className = strtolower( $this->argument( $argument ) );
-        $tableName = "{$className}s";
+        $className = $this->argument( $argument );
+        $tableName = strtolower( preg_replace( '/[A-Z][a-z]+/', '_$0', lcfirst( $this->argument( $argument ) ) ) ) . 's';
 
         if ( str_contains( $stubFileName, 'create' ) ) {
-            $fileName = lcfirst( $namespace . '\\' . Carbon::now()->format( 'Y_m_d_His' ) . "_create_{$className}s_table.php" );
+            $fileName = lcfirst( $namespace . '\\' . Carbon::now()->format( 'Y_m_d_His' ) . "_create_{$tableName}_table.php" );
             $className = 'Create' . ucfirst( $className ) . 'sTable';
         }
         else {
-            $fileName = lcfirst( $namespace . '\\' . Carbon::now()->format( 'Y_m_d_His' ) . "_update_{$className}s_table.php" );
+            $fileName = lcfirst( $namespace . '\\' . Carbon::now()->format( 'Y_m_d_His' ) . "_update_{$tableName}_table.php" );
             $className = 'Update' . ucfirst( $className ) . 'sTable';
         }
 
