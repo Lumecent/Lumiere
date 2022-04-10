@@ -22,7 +22,7 @@ class GenerateModel extends GenerateCommand
         $this->info( 'Model created!' );
 
         if ( $this->option( 'm' ) ) {
-            Artisan::call( "lumiere:migration {$this->argument('model')} silent $container create" );
+            Artisan::call( "lumiere:migration {$this->argument('model')} silent $container Create Table" );
             $this->info( 'Migration created!' );
         }
     }
