@@ -1,0 +1,45 @@
+#!/bin/bash
+
+env=$1
+
+if [ "$env" != "" ]; then
+  if [ "$env" != "development" ] || [ "$env" != "production" ]; then
+      return
+  fi
+fi
+
+if [ ! -f .env ]; then
+    cp .env.example .env
+
+    env=development
+fi
+
+if [ ! -f ../.env ]; then
+    cp ../.env.example ../.env
+
+    env=development
+fi
+
+if [ "$env" != "" ]; then
+    sed -i "s/COMPOSE_FILE=.*/COMPOSE_FILE=docker-compose.yml:docker-compose.$env.yml/" .env
+
+    sed -i "s/APP_ENV=.*/APP_ENV=$env/" ../.env
+fi
+
+docker-compose up -d --build --remove-orphans
+
+docker-compose exec php sh -c "chown -R www-data:www-data /var/www/app"
+
+docker-compose exec mysql sh -c "chown -R mysql:mysql var/lib/mysql/"
+
+sleep 10
+
+docker-compose exec php sh -c "composer install"
+
+docker-compose exec php sh -c "php artisan migrate --force"
+
+docker-compose exec php sh -c "php artisan optimize:clear"
+
+if [ "$env" == "development" ]; then
+    docker-compose exec php sh -c "php artisan db:seed"
+fi

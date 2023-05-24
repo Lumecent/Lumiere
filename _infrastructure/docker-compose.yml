@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+    php:
+        build:
+            context: ./
+            dockerfile: ./php/Dockerfile
+        container_name: lumiere_php
+        restart: always
+        working_dir: /var/www/app
+        volumes:
+            - .././:/var/www/app
+        links:
+            - mysql
+
+    nginx:
+        image: nginx
+        container_name: lumiere_nginx
+        restart: always
+        working_dir: /var/www/app
+        volumes:
+            - ../_logs/nginx:/var/log/nginx
+            - .././:/var/www/app
+        links:
+            - php
+
+    mysql:
+        image: mariadb:10.6.4
+        container_name: lumiere_mysql
+        restart: always
+        volumes:
+            - .././_db-data:/var/lib/mysql/
