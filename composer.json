@@ -1,6 +1,6 @@
 {
     "name": "lumius/laravel-lumiere",
-    "version" : "1.0.3",
+    "version" : "1.0.4",
     "type": "project",
     "description": "Abstraction for laravel framework.",
     "keywords": [],
