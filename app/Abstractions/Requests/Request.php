@@ -2,21 +2,39 @@
 
 namespace App\Abstractions\Requests;
 
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest as IlluminateRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request as IlluminateRequest;
 
-abstract class Request extends IlluminateRequest
+class Request
 {
-    protected function failedValidation( Validator $validator ): void
-    {
-        $errors = ( new ValidationException( $validator ) )->errors();
+    private IlluminateRequest $request;
 
-        throw new HttpResponseException( response()->json( [
-            'message' => 'Введены некорректные данные',
-            'errors' => $errors
-        ], Response::HTTP_UNPROCESSABLE_ENTITY ) );
+    public function __construct( IlluminateRequest $request )
+    {
+        $this->request = $request;
+    }
+
+    public function getHeader( string $name ): ?string
+    {
+        return $this->request->header( $name );
+    }
+
+    public function get( string $name ): string|array|null
+    {
+        return $this->request->get( $name );
+    }
+
+    public function all( ?array $keys = null ): array
+    {
+        return $this->request->all( $keys );
+    }
+
+    public function getAuthToken( string $authType = 'Bearer' ): string
+    {
+        return str_replace( "$authType ", '', $this->getHeader( 'Authorization' ) ?? '' );
+    }
+
+    public function toArray(): array
+    {
+        return $this->request->toArray();
     }
 }

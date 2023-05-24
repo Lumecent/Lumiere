@@ -18,7 +18,7 @@ class GenerateProvider extends GenerateCommand
 
         FilesystemHelper::createDir( "app/Containers/$container/Providers" );
 
-        $this->createFile( [ 'provider', "App\Containers\\$container\Providers" ], 'provider', 'Provider' );
+        $this->createFile( [ 'provider', "App\Containers\\$container\Providers" ], 'provider', 'ServiceProvider' );
         $this->info( 'Provider created!' );
     }
 }

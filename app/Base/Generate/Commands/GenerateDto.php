@@ -9,15 +9,15 @@ class GenerateDto extends GenerateCommand
 {
     protected $signature = 'lumiere:dto {dto} {mode=interactive} {container?}';
 
-    protected $description = 'Create a new factories';
+    protected $description = 'Create a new dto';
 
     protected function processGenerateFile( $params ): void
     {
         [ $container ] = $params;
 
-        FilesystemHelper::createDir( "app/Containers/$container/DTO" );
+        FilesystemHelper::createDir( "app/Containers/$container/Dto" );
 
-        $this->createFile( [ 'dto', "App\Containers\\$container\DTO" ], 'dto', 'Dto' );
+        $this->createFile( [ 'dto', "App\Containers\\$container\Dto" ], 'dto', 'Dto' );
         $this->info( 'Dto created!' );
     }
 }

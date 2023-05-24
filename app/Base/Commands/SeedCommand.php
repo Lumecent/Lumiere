@@ -91,32 +91,35 @@ class SeedCommand extends Command
     {
         $class = $this->input->getArgument( 'class' ) ?? $this->input->getOption( 'class' );
 
-        $seederPath = '';
-        if ( !str_contains( $class, '\\' ) ) {
-            $filesystem = new Filesystem();
-            foreach ( $filesystem->directories( app_path( 'Containers' ) ) as $container ) {
-                $containerPath = explode( '/', str_replace( '\\', '/', $container ) );
-                $containerName = array_pop( $containerPath );
+        if ( $class === 'Database\\Seeders\\DatabaseSeeder' ) {
+            $seederPath = class_exists( $class ) ? $class : 'DatabaseSeeder';
+        }
+        else {
+            $class .= 'Seeder';
 
-                $seederDir = "$container/Data/Seeders";
-                if ( $filesystem->exists( $seederDir ) ) {
-                    foreach ( $filesystem->files( $seederDir ) as $seederFile ) {
-                        $seederFileName = str_replace( '.php', '', $seederFile->getFilename() );
-                        if ( $class === $seederFileName ) {
-                            $seederPath = '\App\Containers\\' . $containerName . '\Data\Seeders\\' . $seederFileName;
-                            break;
+            $seederPath = '';
+            if ( !str_contains( $class, '\\' ) ) {
+                $filesystem = new Filesystem();
+                foreach ( $filesystem->directories( app_path( 'Containers' ) ) as $container ) {
+                    $containerPath = explode( '/', str_replace( '\\', '/', $container ) );
+                    $containerName = array_pop( $containerPath );
+
+                    $seederDir = "$container/Data/Seeders";
+                    if ( $filesystem->exists( $seederDir ) ) {
+                        foreach ( $filesystem->files( $seederDir ) as $seederFile ) {
+                            $seederFileName = str_replace( '.php', '', $seederFile->getFilename() );
+                            if ( $class === $seederFileName ) {
+                                $seederPath = '\App\Containers\\' . $containerName . '\Data\Seeders\\' . $seederFileName;
+                                break;
+                            }
                         }
                     }
                 }
-            }
 
-            if ( empty( $seederPath ) ) {
-                $seederPath = 'Database\\Seeders\\' . $class;
+                if ( empty( $seederPath ) ) {
+                    $seederPath = 'Database\\Seeders\\' . $class;
+                }
             }
-        }
-
-        if ( $class === 'Database\\Seeders\\DatabaseSeeder' && !class_exists( $class ) ) {
-            $seederPath = 'DatabaseSeeder';
         }
 
         return $this->laravel->make( $seederPath ?: $class )

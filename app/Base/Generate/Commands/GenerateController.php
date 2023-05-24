@@ -13,17 +13,17 @@ class GenerateController extends GenerateCommand
 
     protected function interactiveMode(): void
     {
-        $container = ucfirst( strtolower( $this->ask( 'Specify the container name' ) ) );
+        $container = ucfirst( ( $this->ask( 'Specify the container name' ) ) );
         $this->checkContainer( $container );
 
-        $type = ucfirst( strtolower( $this->choice( 'Specify the controller type', [ 'Api', 'Web', 'Console' ] ) ) );
+        $type = ucfirst( ( $this->choice( 'Specify the controller type', [ 'Api', 'Web', 'Console' ] ) ) );
 
         $this->processGenerateFile( [ $type, $container ] );
     }
 
     protected function silentMode(): void
     {
-        $container = ucfirst( strtolower( $this->argument( 'container' ) ) );
+        $container = ucfirst( ( $this->argument( 'container' ) ) );
         if ( !$container ) {
             $this->error( "Enter container name!" );
 

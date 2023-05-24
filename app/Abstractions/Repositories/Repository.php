@@ -2,25 +2,36 @@
 
 namespace App\Abstractions\Repositories;
 
-use App\Abstractions\DTO\Dto;
-use App\Abstractions\Entities\Entity;
-use App\Abstractions\Models\Model;
+use App\Abstractions\Interfaces\RepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
-abstract class Repository
+abstract class Repository implements RepositoryInterface
 {
-    abstract protected static function getModelClass(): string;
+    abstract protected function getModelClass(): Model;
 
-    abstract protected function getEntity( ?Model $model ): ?Entity;
-
-    abstract public function create( Dto $dto ): ?Entity;
-
-    abstract public function update( Dto $dto ): ?Entity;
-
-    abstract public function delete( Dto $dto ): bool;
-
-    public function startConditions(): Model
+    public function query(): Builder
     {
-        $model = static::getModelClass();
-        return new $model();
+        return $this->getModelClass()::query();
+    }
+
+    public function findById( int $id, array $columns = [ '*' ] ): ?Model
+    {
+        return $this->getModelClass()::query()->find( $id, $columns );
+    }
+
+    public function findByIdOrFail( int $id, array $columns = [ '*' ] ): ?Model
+    {
+        return $this->getModelClass()::query()->findOrFail( $id, $columns );
+    }
+
+    public function findByIdWithRelations( int $id, string|array $relation, array $columns = [ '*' ] ): ?Model
+    {
+        return $this->getModelClass()::query()->with( $relation )->find( $id, $columns );
+    }
+
+    public function findByUserId( int $userId, array $columns = [ '*' ] ): ?Model
+    {
+        return $this->getModelClass()::query()->select( $columns )->firstWhere( 'user_id', $userId );
     }
 }

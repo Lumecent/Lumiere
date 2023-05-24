@@ -2,8 +2,10 @@
 
 namespace App\Base\Kernels;
 
+use App\Base\Middleware\ApiAuthMiddleware;
 use App\Base\Middleware\Authenticate;
 use App\Base\Middleware\EncryptCookies;
+use App\Base\Middleware\HasRoleMiddleware;
 use App\Base\Middleware\PreventRequestsDuringMaintenance;
 use App\Base\Middleware\RedirectIfAuthenticated;
 use App\Base\Middleware\TrimStrings;
@@ -74,6 +76,9 @@ class HttpKernel extends AbstractHttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        'api.auth' => ApiAuthMiddleware::class,
+        'role' => HasRoleMiddleware::class,
+
         'auth' => Authenticate::class,
         'auth.basic' => AuthenticateWithBasicAuth::class,
         'cache.headers' => SetCacheHeaders::class,

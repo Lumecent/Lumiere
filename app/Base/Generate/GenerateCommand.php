@@ -7,7 +7,7 @@ use App\Utilities\Helpers\FilesystemHelper;
 
 class GenerateCommand extends ConsoleCommand
 {
-    private string $stubPath = 'app/Base/Generate/Stubs';
+    private string $stubPath = 'app/Base/Generate/stubs';
 
     protected function interactiveMode(): void
     {

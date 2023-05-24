@@ -3,7 +3,7 @@
 namespace {{ namespace }};
 
 use App\Abstractions\Controllers\WebController;
-use App\Abstractions\Requests\WebRequest;
+use App\Abstractions\Requests\Request;
 
 class {{ class }} extends WebController
 {
@@ -26,9 +26,9 @@ class {{ class }} extends WebController
     /**
      * Store a newly created resource in storage.
      *
-     * @param WebRequest $request
+     * @param Request $request
      */
-    public function store(WebRequest $request)
+    public function store(Request $request)
     {
         //
     }
@@ -56,10 +56,10 @@ class {{ class }} extends WebController
     /**
      * Update the specified resource in storage.
      *
-     * @param WebRequest $request
+     * @param Request $request
      * @param int $id
      */
-    public function update(WebRequest $request, int $id)
+    public function update(Request $request, int $id)
     {
         //
     }

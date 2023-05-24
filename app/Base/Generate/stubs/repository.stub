@@ -2,12 +2,13 @@
 
 namespace {{ namespace }};
 
+use App\Abstractions\Models\Model;
 use App\Abstractions\Repositories\Repository;
 
 class {{ class }} extends Repository
 {
-    protected static function getModelClass(): string
+    protected function getModelClass(): Model
     {
-        return Model::class;
+        return new Model();
     }
 }

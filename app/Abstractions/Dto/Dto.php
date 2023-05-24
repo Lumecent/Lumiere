@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Abstractions\DTO;
+namespace App\Abstractions\Dto;
 
+use App\Abstractions\Requests\FormRequest;
 use App\Abstractions\Requests\Request;
-use InvalidArgumentException;
 
 abstract class Dto
 {
@@ -16,13 +16,13 @@ abstract class Dto
                 $this->$dtoProperty = $params[ $dtoProperty ];
             }
             else {
-                throw new InvalidArgumentException( "$dtoProperty not found in params array" );
+                $this->$dtoProperty = null;
             }
         }
         return $this;
     }
 
-    public function fromRequest( Request $request ): Dto
+    public function fromRequest( Request|FormRequest $request ): Dto
     {
         return $this->fromArray( $request->all() );
     }

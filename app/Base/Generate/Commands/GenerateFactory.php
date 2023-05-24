@@ -13,10 +13,10 @@ class GenerateFactory extends GenerateCommand
 
     protected function interactiveMode(): void
     {
-        $container = ucfirst( strtolower( $this->ask( 'Specify the container name' ) ) );
+        $container = ucfirst( ( $this->ask( 'Specify the container name' ) ) );
         $this->checkContainer( $container );
 
-        $model = ucfirst( strtolower( $this->ask( 'Specify the model name' ) ) );
+        $model = ucfirst( ( $this->ask( 'Specify the model name' ) ) );
         $modelPath = "app/Containers/$container/Models/$model.php";
         $this->checkModel( $modelPath );
 
@@ -25,7 +25,7 @@ class GenerateFactory extends GenerateCommand
 
     protected function silentMode(): void
     {
-        $container = ucfirst( strtolower( $this->argument( 'container' ) ) );
+        $container = ucfirst( ( $this->argument( 'container' ) ) );
         if ( !$container ) {
             $this->error( "Enter container name!" );
 
@@ -33,7 +33,7 @@ class GenerateFactory extends GenerateCommand
         }
         $this->checkContainer( $container );
 
-        $model = ucfirst( strtolower( $this->argument( 'model' ) ) );
+        $model = ucfirst( ( $this->argument( 'model' ) ) );
         if ( !$model ) {
             $this->error( "Enter model name!" );
 
@@ -84,7 +84,7 @@ class GenerateFactory extends GenerateCommand
             $stubFileName
         );
 
-        FilesystemHelper::createFile( str_replace( '\\', '/', $fileName ) . ".php", $contentNewFile );
+        FilesystemHelper::createFile( lcfirst(str_replace( '\\', '/', $fileName )) . ".php", $contentNewFile );
     }
 
     private function checkModel( $modelPath ): void

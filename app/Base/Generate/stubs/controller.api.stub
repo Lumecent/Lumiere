@@ -3,7 +3,7 @@
 namespace {{ namespace }};
 
 use App\Abstractions\Controllers\ApiController;
-use App\Abstractions\Requests\ApiRequest;
+use App\Abstractions\Requests\Request;
 use App\Abstractions\Responses\ApiResponse;
 
 class {{ class }} extends ApiController
@@ -21,10 +21,10 @@ class {{ class }} extends ApiController
     /**
      * Store a newly created resource in storage.
      *
-     * @param ApiRequest $request
+     * @param Request $request
      * @return ApiResponse
      */
-    public function store(ApiRequest $request): ApiResponse
+    public function store(Request $request): ApiResponse
     {
         //
     }
@@ -43,11 +43,11 @@ class {{ class }} extends ApiController
     /**
      * Update the specified resource in storage.
      *
-     * @param ApiRequest $request
+     * @param Request $request
      * @param int $id
      * @return ApiResponse
      */
-    public function update(ApiRequest $request, int $id): ApiResponse
+    public function update(Request $request, int $id): ApiResponse
     {
         //
     }

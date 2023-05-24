@@ -14,7 +14,7 @@ class GenerateMigration extends GenerateCommand
 
     protected function interactiveMode(): void
     {
-        $container = ucfirst( strtolower( $this->ask( 'Specify the container name' ) ) );
+        $container = ucfirst(( $this->ask( 'Specify the container name' ) ) );
         $this->checkContainer( $container );
 
         $type = ucwords( strtolower( $this->choice( 'Specify the migration type', [ 'Create Table', 'Update Table' ] ) ) );
@@ -24,7 +24,7 @@ class GenerateMigration extends GenerateCommand
 
     protected function silentMode(): void
     {
-        $container = ucfirst( strtolower( $this->argument( 'container' ) ) );
+        $container = ucfirst( ( $this->argument( 'container' ) ) );
         if ( !$container ) {
             $this->error( "Enter container name!" );
 
@@ -73,20 +73,16 @@ class GenerateMigration extends GenerateCommand
     {
         [ $argument, $namespace ] = $params;
 
-        $className = $this->argument( $argument );
         $tableName = strtolower( preg_replace( '/[A-Z][a-z]+/', '_$0', lcfirst( $this->argument( $argument ) ) ) ) . 's';
 
         if ( str_contains( $stubFileName, 'create' ) ) {
             $fileName = lcfirst( $namespace . '\\' . Carbon::now()->format( 'Y_m_d_His' ) . "_create_{$tableName}_table.php" );
-            $className = 'Create' . ucfirst( $className ) . 'sTable';
         }
         else {
             $fileName = lcfirst( $namespace . '\\' . Carbon::now()->format( 'Y_m_d_His' ) . "_update_{$tableName}_table.php" );
-            $className = 'Update' . ucfirst( $className ) . 'sTable';
         }
 
         $replaces = [
-            '{{ class }}' => $className,
             '{{ namespace }}' => $namespace,
             '{{ table }}' => $tableName
         ];
