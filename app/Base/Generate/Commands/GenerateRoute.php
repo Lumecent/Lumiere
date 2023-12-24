@@ -13,7 +13,7 @@ class GenerateRoute extends GenerateCommand
 
     protected function interactiveMode(): void
     {
-        $container = ucfirst( strtolower( $this->ask( 'Specify the container name' ) ) );
+        $container = ucfirst( $this->ask( 'Specify the container name' ) );
         $this->checkContainer( $container );
 
         $type = ucfirst( strtolower( $this->choice( 'Specify the route type', [ 'Api', 'Web' ] ) ) );
