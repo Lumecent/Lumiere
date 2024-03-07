@@ -2,15 +2,23 @@
 
 namespace App\Containers\User\Data\Seeders;
 
+use App\Abstractions\Database\Seeders\Seeder;
 use App\Containers\User\Models\User;
-use Illuminate\Database\Seeder;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Cache;
+use App\Utilities\Factories\Repository;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
-//         User::factory(10)->create();
+        User::factory( rand( 5, 50 ) )->create();
+    }
+
+    public function truncate(): void
+    {
+        $this->disableForeignKeys();
+
+        Repository::user()->query()->truncate();
+
+        $this->enableForeignKeys();
     }
 }
