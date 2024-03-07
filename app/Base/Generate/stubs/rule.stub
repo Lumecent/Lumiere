@@ -2,39 +2,12 @@
 
 namespace {{ namespace }};
 
-use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class {{ class }} implements Rule
+class {{ class }} implements ValidationRule
 {
-    /**
-     * Create a new rule instance.
-     *
-     * @return void
-     */
-    public function __construct(): void
-    {
-        //
-    }
-
-    /**
-     * Determine if the validation rule passes.
-     *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @return bool
-     */
-    public function passes($attribute, $value): bool
-    {
-        //
-    }
-
-    /**
-     * Get the validation error message.
-     *
-     * @return string
-     */
-    public function message(): string
-    {
-        return 'The validation error message.';
-    }
+    public function validate( ?string $attribute, mixed $value, Closure $fail ): void
+        {
+            //
+        }
 }

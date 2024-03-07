@@ -4,21 +4,27 @@ namespace App\Base\Generate\Commands;
 
 use App\Base\Generate\GenerateCommand;
 use App\Utilities\Helpers\FilesystemHelper;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class GenerateSeeder extends GenerateCommand
 {
     protected $signature = 'lumiere:seeder {seeder} {mode=interactive} {container?}';
 
-    protected $description = 'Create a new seeder';
+    protected $description = 'Создаёт новый сид';
 
-    protected function processGenerateFile( $params ): void
+    /**
+     * @throws FileNotFoundException
+     */
+    protected function processGenerateFile(): void
     {
-        [ $container ] = $params;
+        FilesystemHelper::createDir( "app/Containers/$this->container/Data/Seeders" );
 
-        FilesystemHelper::createDir( "app/Containers/$container/Data" );
-        FilesystemHelper::createDir( "app/Containers/$container/Data/Seeders" );
+        $this->argument = 'seeder';
+        $this->namespace = "App\Containers\\$this->container\Data\Seeders";
+        $this->stubFileName = 'seeder';
 
-        $this->createFile( [ 'seeder', "App\Containers\\$container\Data\Seeders" ], 'seeder', 'Seeder' );
-        $this->info( 'Seeder created!' );
+        $this->createFile( 'Seeder' );
+
+        $this->info( 'Сид создан!' );
     }
 }

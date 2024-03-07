@@ -1,0 +1,10 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Abstractions\Testing\BaseTest;
+
+class {{ class }} extends BaseTest
+{
+    private ?string $route = null;
+}

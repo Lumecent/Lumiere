@@ -8,29 +8,8 @@ use Illuminate\Support\Facades\Cache;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    /**
-     * The path to the "home" route for your application.
-     *
-     * This is used by Laravel authentication to redirect users after login.
-     *
-     * @var string
-     */
-    public const HOME = '/home';
+    public const string HOME = '/home';
 
-    /**
-     * The controller namespace for the application.
-     *
-     * When present, controller route declarations will automatically be prefixed with this namespace.
-     *
-     * @var string|null
-     */
-    // protected $namespace = 'App\\Http\\Controllers';
-
-    /**
-     * Define your route model bindings, pattern filters, etc.
-     *
-     * @return void
-     */
     public function boot(): void
     {
         parent::boot();
@@ -62,8 +41,13 @@ class RouteServiceProvider extends ServiceProvider
                 }
 
                 if ( $filesystem->exists( $container . '/Routes/Api' ) ) {
-                    foreach ( $filesystem->files( $container . '/Routes/Api' ) as $routeFile ) {
-                        $routeProviderList[] = '\App\Containers\\' . $containerName . '\Routes\Api\\' . str_replace( '.php', '', $routeFile->getFilename() );
+                    foreach ( $filesystem->directories( $container . '/Routes/Api' ) as $versionRoute ) {
+                        $versionRaw = explode( '/', $versionRoute );
+                        $version = array_pop( $versionRaw );
+
+                        foreach ( $filesystem->files( $versionRoute ) as $routeFile ) {
+                            $routeProviderList[] = "\App\Containers\\$containerName\Routes\Api\\$version\\" . str_replace( '.php', '', $routeFile->getFilename() );
+                        }
                     }
                 }
             }
@@ -77,7 +61,8 @@ class RouteServiceProvider extends ServiceProvider
                 Cache::put( 'routeProviderList', $routeProviderList, 60 );
                 return $routeProviderList;
             } );
-        } else {
+        }
+        else {
             $routeProviderList = $routeProviderListFunction();
         }
 

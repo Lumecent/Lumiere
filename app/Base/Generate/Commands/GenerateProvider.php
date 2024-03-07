@@ -4,21 +4,27 @@ namespace App\Base\Generate\Commands;
 
 use App\Base\Generate\GenerateCommand;
 use App\Utilities\Helpers\FilesystemHelper;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class GenerateProvider extends GenerateCommand
 {
     protected $signature = 'lumiere:provider {provider} {mode=interactive} {container?}';
 
-    protected $description = 'Create a new providers';
+    protected $description = 'Создаёт нового провайдера';
 
-    protected function processGenerateFile( $params ): void
+    /**
+     * @throws FileNotFoundException
+     */
+    protected function processGenerateFile(): void
     {
-        [ $container ] = $params;
+        FilesystemHelper::createDir( "app/Containers/$this->container/Providers" );
 
-        FilesystemHelper::createDir( "app/Containers/$container/Providers" );
+        $this->argument = 'provider';
+        $this->namespace = "App\Containers\\$this->container\Providers";
+        $this->stubFileName = 'provider';
 
-        $this->createFile( [ 'provider', "App\Containers\\$container\Providers" ], 'provider', 'ServiceProvider' );
-        $this->info( 'Provider created!' );
+        $this->createFile( 'ServiceProvider' );
+
+        $this->info( 'Провайдер создан!' );
     }
 }

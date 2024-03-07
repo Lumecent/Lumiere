@@ -2,7 +2,9 @@
 
 namespace {{ namespace }};
 
-class {{ class }}
+use App\Abstractions\Service\Service;
+
+class {{ class }} extends Service
 {
 
 }

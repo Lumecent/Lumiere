@@ -4,20 +4,27 @@ namespace App\Base\Generate\Commands;
 
 use App\Base\Generate\GenerateCommand;
 use App\Utilities\Helpers\FilesystemHelper;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class GenerateRepository extends GenerateCommand
 {
     protected $signature = 'lumiere:repository {repository} {mode=interactive} {container?}';
 
-    protected $description = 'Create a new repositories';
+    protected $description = 'Создаёт новый репозиторий';
 
-    protected function processGenerateFile( $params ): void
+    /**
+     * @throws FileNotFoundException
+     */
+    protected function processGenerateFile(): void
     {
-        [ $container ] = $params;
+        FilesystemHelper::createDir( "app/Containers/$this->container/Repositories" );
 
-        FilesystemHelper::createDir( "app/Containers/$container/Repositories" );
+        $this->argument = 'repository';
+        $this->namespace = "App\Containers\\$this->container\Repositories";
+        $this->stubFileName = 'repository';
 
-        $this->createFile( [ 'repository', "App\Containers\\$container\Repositories" ], 'repository', 'Repository' );
-        $this->info( 'Repository created!' );
+        $this->createFile( 'Repository' );
+
+        $this->info( 'Репозиторий создан!' );
     }
 }

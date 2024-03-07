@@ -2,9 +2,9 @@
 
 namespace {{ namespace }};
 
-use App\Abstractions\Dto\Dto;
+use App\Abstractions\Http\Dto\Dto;
 
-class {{ class }} extends Dto
+readonly class {{ class }} extends Dto
 {
 
 }

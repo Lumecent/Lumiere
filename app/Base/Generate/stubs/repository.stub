@@ -2,8 +2,8 @@
 
 namespace {{ namespace }};
 
-use App\Abstractions\Models\Model;
-use App\Abstractions\Repositories\Repository;
+use App\Abstractions\Database\Models\Model;
+use App\Abstractions\Database\Repositories\Repository;
 
 class {{ class }} extends Repository
 {

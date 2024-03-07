@@ -2,62 +2,32 @@
 
 namespace {{ namespace }};
 
-use App\Abstractions\Controllers\ApiController;
-use App\Abstractions\Requests\Request;
-use App\Abstractions\Responses\ApiResponse;
+use App\Abstractions\Http\Controllers\ApiController;
+use App\Abstractions\Http\Requests\Request;
+use App\Abstractions\Http\Responses\ApiResponse;
 
 class {{ class }} extends ApiController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return ApiResponse
-     */
     public function index(): ApiResponse
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     * @return ApiResponse
-     */
     public function store(Request $request): ApiResponse
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return ApiResponse
-     */
     public function show(int $id): ApiResponse
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param int $id
-     * @return ApiResponse
-     */
     public function update(Request $request, int $id): ApiResponse
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return ApiResponse
-     */
     public function destroy(int $id): ApiResponse
     {
         //

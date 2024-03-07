@@ -4,21 +4,27 @@ namespace App\Base\Generate\Commands;
 
 use App\Base\Generate\GenerateCommand;
 use App\Utilities\Helpers\FilesystemHelper;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class GenerateInterface extends GenerateCommand
 {
     protected $signature = 'lumiere:interface {interface} {mode=interactive} {container?} {--m}';
 
-    protected $description = 'Create a new interfaces';
+    protected $description = 'Создаёт новый интерфейс';
 
-    protected function processGenerateFile( $params ): void
+    /**
+     * @throws FileNotFoundException
+     */
+    protected function processGenerateFile(): void
     {
-        [ $container ] = $params;
+        FilesystemHelper::createDir( "app/Containers/$this->container/Interfaces" );
 
-        FilesystemHelper::createDir( "app/Containers/$container/Interfaces" );
+        $this->argument = 'interface';
+        $this->namespace = "App\Containers\\$this->container\Interfaces";
+        $this->stubFileName = 'interface';
 
-        $this->createFile( [ 'interface', "App\Containers\\$container\Interfaces" ], 'interface', 'Interface' );
-        $this->info( 'Interface created!' );
+        $this->createFile( 'Interface' );
+
+        $this->info( 'Интерфейс создан!' );
     }
 }

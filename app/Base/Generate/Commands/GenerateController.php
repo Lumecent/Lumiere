@@ -4,53 +4,79 @@ namespace App\Base\Generate\Commands;
 
 use App\Base\Generate\GenerateCommand;
 use App\Utilities\Helpers\FilesystemHelper;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class GenerateController extends GenerateCommand
 {
-    protected $signature = 'lumiere:controller {controller} {mode=interactive} {container?} {type?}';
+    protected $signature = 'lumiere:controller {controller} {mode=interactive} {container?} {type?} {version?}';
 
-    protected $description = 'Create a new controllers';
+    protected $description = 'Создаёт новый контроллер в контейнере';
 
+    private ?string $type = null;
+    private ?string $version = null;
+
+    private array $typeControllers = [
+        'Api', 'Web', 'Console'
+    ];
+
+    /**
+     * @throws FileNotFoundException
+     */
     protected function interactiveMode(): void
     {
-        $container = ucfirst( ( $this->ask( 'Specify the container name' ) ) );
-        $this->checkContainer( $container );
+        $this->interactiveContainer();
 
-        $type = ucfirst( ( $this->choice( 'Specify the controller type', [ 'Api', 'Web', 'Console' ] ) ) );
+        $this->type = ucfirst( ( $this->choice( 'Выберите тип контроллера', $this->typeControllers ) ) );
 
-        $this->processGenerateFile( [ $type, $container ] );
+        if ( $this->type === 'Api' ) {
+            $this->version = $this->choice( 'Выберите версию API', config( 'lumiere.api_versions' ) );
+        }
+
+        $this->processGenerateFile();
     }
 
+    /**
+     * @throws FileNotFoundException
+     */
     protected function silentMode(): void
     {
-        $container = ucfirst( ( $this->argument( 'container' ) ) );
-        if ( !$container ) {
-            $this->error( "Enter container name!" );
+        $this->silentContainer();
 
-            exit();
-        }
-        $this->checkContainer( $container );
-
-        $type = strtolower( $this->argument( 'type' ) );
-        if ( !in_array( $type, [ 'api', 'web', 'console' ] ) ) {
-            $this->error( 'Controller type should be "api", "web" or "console"' );
+        $this->type = ucfirst( strtolower( $this->argument( 'type' ) ) );
+        if ( !in_array( $this->type, $this->typeControllers ) ) {
+            $this->error( 'Доступные типы контроллеров: ' . implode( ', ', $this->typeControllers ) );
 
             exit();
         }
 
-        $type = ucfirst( $type );
+        if ( $this->type === 'Api' ) {
+            $this->version = $this->argument( 'version' );
+            if ( !in_array( $this->type, config( 'lumiere.api_versions' ) ) ) {
+                $this->error( 'Доступные версии API: ' . implode( ', ', config( 'lumiere.api_versions' ) ) );
+            }
+        }
 
-        $this->processGenerateFile( [ $type, $container ] );
+        $this->processGenerateFile();
     }
 
-    protected function processGenerateFile( $params ): void
+    /**
+     * @throws FileNotFoundException
+     */
+    protected function processGenerateFile(): void
     {
-        [ $type, $container ] = $params;
+        FilesystemHelper::createDir( "app/Containers/$this->container/Controllers" );
+        FilesystemHelper::createDir( "app/Containers/$this->container/Controllers/$this->type" );
 
-        FilesystemHelper::createDir( "app/Containers/$container/Controllers" );
-        FilesystemHelper::createDir( "app/Containers/$container/Controllers/" . ucfirst( $type ) );
+        if ( $this->version ) {
+            FilesystemHelper::createDir( "app/Containers/$this->container/Controllers/$this->type/V$this->version" );
+        }
 
-        $this->createFile( [ 'controller', "App\Containers\\$container\Controllers\\$type" ], 'controller.' . strtolower( $type ), 'Controller' );
-        $this->info( 'Controller created!' );
+        $this->argument = 'controller';
+        $this->namespace = "App\Containers\\$this->container\Controllers\\$this->type" . ( $this->version ? "\\V$this->version" : '');
+        $this->stubFileName = 'controller.' . strtolower( $this->type );
+
+        $this->createFile( 'Controller' );
+
+        $this->info( 'Контроллер создан!' );
     }
 }

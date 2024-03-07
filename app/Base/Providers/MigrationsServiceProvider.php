@@ -3,16 +3,10 @@
 namespace App\Base\Providers;
 
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
 
 class MigrationsServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
     public function boot(): void
     {
         $filesystem = new Filesystem();

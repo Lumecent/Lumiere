@@ -2,10 +2,10 @@
 
 namespace {{ namespace }};
 
-use App\Abstractions\Models\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Abstractions\Database\Models\Model;
+use App\Abstractions\Traits\HasFactoryTrait;
 
 class {{ class }} extends Model
 {
-    use HasFactory;
+    use HasFactoryTrait;
 }

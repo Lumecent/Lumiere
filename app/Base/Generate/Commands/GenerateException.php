@@ -4,20 +4,27 @@ namespace App\Base\Generate\Commands;
 
 use App\Base\Generate\GenerateCommand;
 use App\Utilities\Helpers\FilesystemHelper;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class GenerateException extends GenerateCommand
 {
     protected $signature = 'lumiere:exception {exception} {mode=interactive} {container?}';
 
-    protected $description = 'Create a new exception';
+    protected $description = 'Создаёт новое исключение';
 
-    protected function processGenerateFile( $params ): void
+    /**
+     * @throws FileNotFoundException
+     */
+    protected function processGenerateFile(): void
     {
-        [ $container ] = $params;
+        FilesystemHelper::createDir( "app/Containers/$this->container/Exceptions" );
 
-        FilesystemHelper::createDir( "app/Containers/$container/Exceptions" );
+        $this->argument = 'exception';
+        $this->namespace = "App\Containers\\$this->container\Exceptions";
+        $this->stubFileName = 'exception';
 
-        $this->createFile( [ 'exception', "App\Containers\\$container\Exceptions" ], 'exception', 'Exception' );
-        $this->info( 'Exception created!' );
+        $this->createFile( 'Exception' );
+
+        $this->info( 'Исключение создано!' );
     }
 }

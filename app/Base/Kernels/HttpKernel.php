@@ -2,8 +2,12 @@
 
 namespace App\Base\Kernels;
 
+use App\Abstractions\Kernels\HttpKernel as AbstractHttpKernel;
 use App\Base\Middleware\ApiAuthMiddleware;
+use App\Base\Middleware\ApiAuthModeratorMiddleware;
+use App\Base\Middleware\ArtistMiddleware;
 use App\Base\Middleware\Authenticate;
+use App\Base\Middleware\AuthModeratorMiddleware;
 use App\Base\Middleware\EncryptCookies;
 use App\Base\Middleware\HasRoleMiddleware;
 use App\Base\Middleware\PreventRequestsDuringMaintenance;
@@ -11,15 +15,14 @@ use App\Base\Middleware\RedirectIfAuthenticated;
 use App\Base\Middleware\TrimStrings;
 use App\Base\Middleware\TrustProxies;
 use App\Base\Middleware\VerifyCsrfToken;
-use Fruitcake\Cors\HandleCors;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
 use Illuminate\Auth\Middleware\RequirePassword;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use App\Abstractions\Kernels\HttpKernel as AbstractHttpKernel;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
+use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Http\Middleware\SetCacheHeaders;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Routing\Middleware\ThrottleRequests;
@@ -76,7 +79,10 @@ class HttpKernel extends AbstractHttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        'auth.moderator' => AuthModeratorMiddleware::class,
         'api.auth' => ApiAuthMiddleware::class,
+        'api.auth.moderator' => ApiAuthModeratorMiddleware::class,
+        'artist' => ArtistMiddleware::class,
         'role' => HasRoleMiddleware::class,
 
         'auth' => Authenticate::class,

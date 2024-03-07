@@ -6,11 +6,6 @@ use App\Abstractions\Seeders\Seeder;
 
 class {{ class }} extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
         //

@@ -2,7 +2,7 @@
 
 namespace {{ namespace }};
 
-use App\Abstractions\Resources\JsonResource;
+use App\Abstractions\Http\Resources\JsonResource;
 
 class {{ class }} extends JsonResource
 {

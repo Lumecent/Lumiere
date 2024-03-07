@@ -10,7 +10,7 @@ class GenerateContainer extends GenerateCommand
 {
     protected $signature = 'lumiere:container {container}';
 
-    protected $description = 'Create a new containers';
+    protected $description = 'Создаёт новый контейнер';
 
     public function handle(): void
     {
@@ -24,48 +24,50 @@ class GenerateContainer extends GenerateCommand
             FilesystemHelper::createDir( 'app/Containers/' . $container );
         }
 
-        if ( $this->confirm( 'Generate Controller?', true ) ) {
-            $type = ucfirst( strtolower( $this->choice( 'Specify the controller type', [ 'Api', 'Web', 'Console' ] ) ) );
+        if ( $this->confirm( 'Создать контроллер?', true ) ) {
+            $type = ucfirst( strtolower( $this->choice( 'Выберите тип контроллера', [ 'Api', 'Web', 'Console' ] ) ) );
+            $version = $type === 'Api' ? $this->choice( 'Выберите версию API', config( 'lumiere.api_versions' ) ) : '';
 
-            Artisan::call( "lumiere:controller $container silent $container $type" );
+            Artisan::call( "lumiere:controller $container silent $container $type $version" );
         }
 
-        if ( $this->confirm( 'Generate Model?', true ) ) {
+        if ( $this->confirm( 'Создать модель?', true ) ) {
             Artisan::call( "lumiere:model $container silent $container" );
 
-            $this->info( 'Model created!' );
+            $this->info( 'Модель создана!' );
         }
 
-        if ( $this->confirm( 'Generate Migration?', true ) ) {
-            $type = 'create table';
+        if ( $this->confirm( 'Создать миграцию?', true ) ) {
+            $type = 'create';
 
             Artisan::call( "lumiere:migration $container silent $container $type" );
 
-            $this->info( 'Migration created!' );
+            $this->info( 'Миграция создана!' );
         }
 
-        if ( $this->confirm( 'Generate DTO?', true ) ) {
+        if ( $this->confirm( 'Создать DTO?', true ) ) {
             Artisan::call( "lumiere:dto $container silent $container" );
         }
 
-        if ( $this->confirm( 'Generate Repository?', true ) ) {
+        if ( $this->confirm( 'Создать репозиторий?', true ) ) {
             Artisan::call( "lumiere:repository $container silent $container" );
         }
 
-        if ( $this->confirm( 'Generate Interface?', true ) ) {
+        if ( $this->confirm( 'Создать интерфейс?', true ) ) {
             Artisan::call( "lumiere:interface $container silent $container" );
         }
 
-        if ( $this->confirm( 'Generate Service Provider?', true ) ) {
+        if ( $this->confirm( 'Создать провайдер?', true ) ) {
             Artisan::call( "lumiere:provider $container silent $container" );
         }
 
-        if ( $this->confirm( 'Generate Route?', true ) ) {
-            $type = ucfirst( strtolower( $this->choice( 'Specify the route type', [ 'Api', 'Web' ] ) ) );
+        if ( $this->confirm( 'Создать маршрут?', true ) ) {
+            $type = ucfirst( strtolower( $this->choice( 'Выберите тип маршрута', [ 'Api', 'Web' ] ) ) );
+            $version = $type === 'Api' ? $this->choice( 'Выберите версию API', config( 'lumiere.api_versions' ) ) : '';
 
-            Artisan::call( "lumiere:route $container silent $container $type" );
+            Artisan::call( "lumiere:route $container silent $container $type $version" );
         }
 
-        $this->info( 'Container created!' );
+        $this->info( 'Контейнер создан!' );
     }
 }

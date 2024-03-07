@@ -2,95 +2,121 @@
 
 namespace App\Base\Generate\Commands;
 
+use App\Abstractions\Collections\ModelsCollection;
 use App\Base\Generate\GenerateCommand;
 use App\Utilities\Helpers\FilesystemHelper;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class GenerateFactory extends GenerateCommand
 {
     protected $signature = 'lumiere:factory {factory} {mode=interactive} {container?} {model?}';
 
-    protected $description = 'Create a new factories';
+    protected $description = 'Создаёт фабрику для генерации моделей';
 
-    protected function interactiveMode(): void
+    private ?string $model = null;
+    private ?string $modelNamespace = null;
+
+    public function choiceModel( $containerPath ): string
     {
-        $container = ucfirst( ( $this->ask( 'Specify the container name' ) ) );
-        $this->checkContainer( $container );
+        $modelsCollection = new ModelsCollection();
 
-        $model = ucfirst( ( $this->ask( 'Specify the model name' ) ) );
-        $modelPath = "app/Containers/$container/Models/$model.php";
-        $this->checkModel( $modelPath );
+        $models = FilesystemHelper::getFiles( $containerPath );
+        foreach ( $models as $model ) {
+            $modelNameRaw = explode( '/', $model );
 
-        $this->processGenerateFile( [ $container, str_replace( [ '.php', '/' ], [ '', '\\' ], $modelPath ) ] );
-    }
-
-    protected function silentMode(): void
-    {
-        $container = ucfirst( ( $this->argument( 'container' ) ) );
-        if ( !$container ) {
-            $this->error( "Enter container name!" );
-
-            exit();
+            $modelsCollection->push( str_replace( '.php', '', array_pop( $modelNameRaw ) ) );
         }
-        $this->checkContainer( $container );
 
-        $model = ucfirst( ( $this->argument( 'model' ) ) );
-        if ( !$model ) {
-            $this->error( "Enter model name!" );
-
-            exit();
-        }
-        $modelPath = "app/Containers/$container/Models/$model.php";
-        $this->checkModel( $modelPath );
-
-        $this->processGenerateFile( [ $container, str_replace( [ '.php', '/' ], [ '', '\\' ], $modelPath ) ] );
+        return $this->choice( 'Выберите модель', $modelsCollection->toArray() );
     }
 
-    protected function processGenerateFile( $params ): void
+    public function createFile( $classPostfix = '' ): void
     {
-        [ $container, $modelNamespace ] = $params;
+        $className = ucfirst( $this->argument( $this->argument ) ) . $classPostfix;
 
-        FilesystemHelper::createDir( "app/Containers/$container/Data" );
-        FilesystemHelper::createDir( "app/Containers/$container/Data/Factories" );
-
-        $this->createFile( [
-            'factory', "App\Containers\\$container\Data\Factories", $modelNamespace
-        ], 'factory', 'Factory' );
-        $this->info( 'Factory created!' );
-    }
-
-    public function createFile( array $params, string $stubFileName, string $classPostfix = '' ): void
-    {
-        [ $argument, $namespace, $modelNamespace ] = $params;
-
-        $className = ucfirst( $this->argument( $argument ) ) . $classPostfix;
-
-        $modelNamespaceRaw = explode( '\\', $modelNamespace );
+        $modelNamespaceRaw = explode( '\\', $this->modelNamespace );
         $model = array_pop( $modelNamespaceRaw );
 
-        $fileName = "$namespace\\$className";
+        $fileName = "$this->namespace\\$className";
         if ( class_exists( $fileName ) ) {
-            $this->error( $fileName . ' already exists!' );
+            $this->error( $fileName . ' уже существует!' );
 
             exit();
         }
 
-        $contentNewFile = $this->parseStubFile(
-            [
-                '{{ class }}' => $className,
-                '{{ model }}' => $model,
-                '{{ factoryNamespace }}' => $namespace,
-                '{{ modelNamespace }}' => ucfirst( $modelNamespace )
-            ],
-            $stubFileName
-        );
+        $this->replaces = [
+            '{{ class }}' => $className,
+            '{{ model }}' => $model,
+            '{{ factoryNamespace }}' => $this->namespace,
+            '{{ modelNamespace }}' => ucfirst( $this->modelNamespace )
+        ];
 
-        FilesystemHelper::createFile( lcfirst(str_replace( '\\', '/', $fileName )) . ".php", $contentNewFile );
+        $contentNewFile = $this->parseStubFile();
+
+        FilesystemHelper::createFile( lcfirst( str_replace( '\\', '/', $fileName ) ) . ".php", $contentNewFile );
+    }
+
+    /**
+     * @throws FileNotFoundException
+     */
+    protected function interactiveMode(): void
+    {
+        $this->interactiveContainer();
+
+        $this->model = $this->choiceModel( "app/Containers/$this->container/Models" );
+
+        $modelPath = "app/Containers/$this->container/Models/$this->model.php";
+
+        $this->checkModel( $modelPath );
+
+        $this->modelNamespace = str_replace( [ '.php', '/' ], [ '', '\\' ], $modelPath );
+
+        $this->processGenerateFile();
+    }
+
+    /**
+     * @throws FileNotFoundException
+     */
+    protected function silentMode(): void
+    {
+        $this->silentContainer();
+
+        $this->model = ucfirst( ( $this->argument( 'model' ) ) );
+        if ( !$this->model ) {
+            $this->error( "Введите название модели!" );
+
+            exit();
+        }
+
+        $modelPath = "app/Containers/$this->container/Models/$this->model.php";
+
+        $this->checkModel( $modelPath );
+
+        $this->modelNamespace = str_replace( [ '.php', '/' ], [ '', '\\' ], $modelPath );
+
+        $this->processGenerateFile();
+    }
+
+    /**
+     * @throws FileNotFoundException
+     */
+    protected function processGenerateFile(): void
+    {
+        FilesystemHelper::createDir( "app/Containers/$this->container/Data/Factories" );
+
+        $this->argument = 'factory';
+        $this->namespace = "App\Containers\\$this->container\Data\Factories";
+        $this->stubFileName = 'factory';
+
+        $this->createFile( 'Factory' );
+
+        $this->info( 'Фабрика создана!' );
     }
 
     private function checkModel( $modelPath ): void
     {
         if ( !FilesystemHelper::existsFile( $modelPath ) ) {
-            $this->error( "Model '$modelPath' not found" );
+            $this->error( "Модель '$modelPath' не найдена" );
 
             exit();
         }

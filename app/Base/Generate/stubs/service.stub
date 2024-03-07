@@ -2,10 +2,16 @@
 
 namespace {{ namespace }};
 
-class {{ class }}
-{
-    public function run()
-    {
+use App\Abstractions\Interfaces\ServiceInterface;
 
+readonly class {{ class }} implements ServiceInterface
+{
+    public function __construct()
+    {
+    }
+
+    public function handle(): mixed
+    {
+        //
     }
 }

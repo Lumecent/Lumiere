@@ -3,7 +3,7 @@
 namespace {{ namespace }};
 
 use App\Abstractions\Providers\RouteServiceProvider;
-use App\Abstractions\Routes\ApiRoute;
+use App\Abstractions\Http\Routes\ApiRoute;
 
 class {{ class }} extends RouteServiceProvider
 {

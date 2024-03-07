@@ -5,89 +5,100 @@ namespace App\Base\Generate\Commands;
 use App\Base\Generate\GenerateCommand;
 use App\Utilities\Helpers\FilesystemHelper;
 use Carbon\Carbon;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class GenerateMigration extends GenerateCommand
 {
     protected $signature = 'lumiere:migration {migration} {mode=interactive} {container?} {type?*}';
 
-    protected $description = 'Create a new migration';
+    protected $description = 'Создаёт новую миграцию';
 
-    protected function interactiveMode(): void
+    private ?string $type = null;
+
+    private array $migrationTypes = [
+        'create',
+        'update'
+    ];
+
+    public function createFile( string $classPostfix = '' ): void
     {
-        $container = ucfirst(( $this->ask( 'Specify the container name' ) ) );
-        $this->checkContainer( $container );
+        $tableName = strtolower( preg_replace( '/[A-Z][a-z]+/', '_$0', lcfirst( $this->argument( $this->argument ) ) ) ) . 's';
 
-        $type = ucwords( strtolower( $this->choice( 'Specify the migration type', [ 'Create Table', 'Update Table' ] ) ) );
+        if ( str_contains( $this->stubFileName, 'create' ) ) {
+            $fileName = lcfirst( $this->namespace . '\\' . Carbon::now()->format( 'Y_m_d_His' ) . "_create_{$tableName}_table.php" );
+        }
+        else {
+            $fileName = lcfirst( $this->namespace . '\\' . Carbon::now()->format( 'Y_m_d_His' ) . "_update_{$tableName}_table.php" );
+        }
 
-        $this->processGenerateFile( [ $type, $container ] );
+        $this->replaces = [
+            '{{ namespace }}' => $this->namespace,
+            '{{ table }}' => $tableName
+        ];
+
+        $contentNewFile = $this->parseStubFile();
+
+        FilesystemHelper::createFile( str_replace( '\\', '/', $fileName ), $contentNewFile );
     }
 
+    /**
+     * @throws FileNotFoundException
+     */
+    protected function interactiveMode(): void
+    {
+        $this->interactiveContainer();
+
+        $this->type = ucwords( strtolower( $this->choice( 'Укажите тип миграции', $this->migrationTypes ) ) );
+
+        $this->processGenerateFile();
+    }
+
+    /**
+     * @throws FileNotFoundException
+     */
     protected function silentMode(): void
     {
-        $container = ucfirst( ( $this->argument( 'container' ) ) );
-        if ( !$container ) {
-            $this->error( "Enter container name!" );
-
-            exit();
-        }
-        $this->checkContainer( $container );
+        $this->silentContainer();
 
         $argument = $this->argument( 'type' );
         if ( is_array( $argument ) ) {
             $argument = array_map( static fn( string $string ) => strtolower( $string ), $argument );
 
-            $type = implode( ' ', $argument );
+            $this->type = implode( ' ', $argument );
         }
         else {
-            $type = strtolower( $argument );
+            $this->type = strtolower( $argument );
         }
 
-        if ( !in_array( $type, [ 'create table', 'update table' ] ) ) {
-            $this->error( 'Migration type should be "create" or "update"' );
+        if ( !in_array( $this->type, $this->migrationTypes ) ) {
+            $this->error( 'Тип миграции должен быть "create" или "update"' );
 
             exit();
         }
 
-        $this->processGenerateFile( [ $type, $container ] );
+        $this->processGenerateFile();
     }
 
-    protected function processGenerateFile( $params ): void
+    /**
+     * @throws FileNotFoundException
+     */
+    protected function processGenerateFile(): void
     {
-        [ $type, $container ] = $params;
+        FilesystemHelper::createDir( "app/Containers/$this->container/Data" );
+        FilesystemHelper::createDir( "app/Containers/$this->container/Data/Migrations" );
 
-        FilesystemHelper::createDir( "app/Containers/$container/Data" );
-        FilesystemHelper::createDir( "app/Containers/$container/Data/Migrations" );
-
-        if ( ucwords( $type ) === 'Create Table' ) {
+        if ( $this->type === 'create' ) {
             $stubFileName = 'migration.create';
         }
         else {
             $stubFileName = 'migration.update';
         }
 
-        $this->createFile( [ 'migration', "App\Containers\\$container\Data\Migrations" ], $stubFileName );
-        $this->info( 'Migration created!' );
-    }
+        $this->argument = 'migration';
+        $this->namespace = "App\Containers\\$this->container\Data\Migrations";
+        $this->stubFileName = $stubFileName;
 
-    public function createFile( array $params, string $stubFileName, string $classPostfix = '' ): void
-    {
-        [ $argument, $namespace ] = $params;
-
-        $tableName = strtolower( preg_replace( '/[A-Z][a-z]+/', '_$0', lcfirst( $this->argument( $argument ) ) ) ) . 's';
-
-        if ( str_contains( $stubFileName, 'create' ) ) {
-            $fileName = lcfirst( $namespace . '\\' . Carbon::now()->format( 'Y_m_d_His' ) . "_create_{$tableName}_table.php" );
-        }
-        else {
-            $fileName = lcfirst( $namespace . '\\' . Carbon::now()->format( 'Y_m_d_His' ) . "_update_{$tableName}_table.php" );
-        }
-
-        $replaces = [
-            '{{ namespace }}' => $namespace,
-            '{{ table }}' => $tableName
-        ];
-
-        $contentNewFile = $this->parseStubFile( $replaces, $stubFileName );
-        FilesystemHelper::createFile( str_replace( '\\', '/', $fileName ), $contentNewFile );
+        $this->createFile();
+        $this->info( 'Миграция создана!' );
     }
 }

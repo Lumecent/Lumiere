@@ -4,20 +4,27 @@ namespace App\Base\Generate\Commands;
 
 use App\Base\Generate\GenerateCommand;
 use App\Utilities\Helpers\FilesystemHelper;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class GenerateResource extends GenerateCommand
 {
     protected $signature = 'lumiere:resource {resource} {mode=interactive} {container?} {type?}';
 
-    protected $description = 'Create a new resources';
+    protected $description = 'Создаёт новый ресурс';
 
-    protected function processGenerateFile( $params ): void
+    /**
+     * @throws FileNotFoundException
+     */
+    protected function processGenerateFile(): void
     {
-        [ $container ] = $params;
+        FilesystemHelper::createDir( "app/Containers/$this->container/Resources" );
 
-        FilesystemHelper::createDir( "app/Containers/$container/Resources" );
+        $this->argument = 'resource';
+        $this->namespace = "App\Containers\\$this->container\Resources";
+        $this->stubFileName = 'resource';
 
-        $this->createFile( [ 'resource', "App\Containers\\$container\Resources" ], 'resource', 'Resource' );
-        $this->info( 'Resource created!' );
+        $this->createFile( 'Resource' );
+
+        $this->info( 'Ресурс создан!' );
     }
 }

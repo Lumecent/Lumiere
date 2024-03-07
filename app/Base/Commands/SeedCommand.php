@@ -2,49 +2,27 @@
 
 namespace App\Base\Commands;
 
-use Illuminate\Console\Command;
+use App\Abstractions\Commands\ConsoleCommand;
+use App\Abstractions\Database\Models\Model;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Console\ConfirmableTrait;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\ConnectionResolverInterface as Resolver;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Database\Seeders\DatabaseSeeder;
 
-class SeedCommand extends Command
+class SeedCommand extends ConsoleCommand
 {
     use ConfirmableTrait;
 
-    /**
-     * The console command name.
-     *
-     * @var string
-     */
     protected $name = 'db:seed';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Seed the database with records';
 
-    /**
-     * The connection resolver instance.
-     *
-     * @var Resolver
-     */
     protected Resolver $resolver;
 
-    /**
-     * Create a new database seed command instance.
-     *
-     * @param ConnectionResolverInterface $resolver
-     * @return void
-     */
     public function __construct( Resolver $resolver )
     {
         parent::__construct();
@@ -53,9 +31,6 @@ class SeedCommand extends Command
     }
 
     /**
-     * Execute the console command.
-     *
-     * @return int
      * @throws BindingResolutionException
      */
     public function handle(): int
@@ -82,9 +57,6 @@ class SeedCommand extends Command
     }
 
     /**
-     * Get a seeder instance from the container.
-     *
-     * @return Seeder
      * @throws BindingResolutionException
      */
     protected function getSeeder(): Seeder
@@ -127,11 +99,6 @@ class SeedCommand extends Command
             ->setCommand( $this );
     }
 
-    /**
-     * Get the name of the database connection to use.
-     *
-     * @return string
-     */
     protected function getDatabase(): string
     {
         $database = $this->input->getOption( 'database' );
@@ -139,11 +106,6 @@ class SeedCommand extends Command
         return $database ?: $this->laravel[ 'config' ][ 'database.default' ];
     }
 
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
     protected function getArguments(): array
     {
         return [
@@ -151,11 +113,6 @@ class SeedCommand extends Command
         ];
     }
 
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
     protected function getOptions(): array
     {
         return [

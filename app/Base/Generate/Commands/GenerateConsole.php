@@ -3,16 +3,25 @@
 namespace App\Base\Generate\Commands;
 
 use App\Base\Generate\GenerateCommand;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class GenerateConsole extends GenerateCommand
 {
     protected $signature = 'lumiere:command {console}';
 
-    protected $description = 'Create a new command';
+    protected $description = 'Создаёт новую консольную команду';
 
+    /**
+     * @throws FileNotFoundException
+     */
     public function handle(): void
     {
-        $this->createFile( [ 'console', 'App\Base\Commands' ], 'console' );
-        $this->info( 'Command created!' );
+        $this->argument = 'console';
+        $this->namespace = 'App\Base\Commands';
+        $this->stubFileName = 'console';
+
+        $this->createFile( 'Command' );
+
+        $this->info( 'Команда создана!' );
     }
 }
