@@ -8,15 +8,11 @@ services:
 
     nginx:
         ports:
-            - "8881:80"
+            - "8889:80"
         working_dir: /var/www/app
         volumes:
             - ./nginx/development/conf.d:/etc/nginx/conf.d/
 
     mysql:
         ports:
-            - "33067:3306"
-        environment:
-            - MYSQL_USER=root
-            - MYSQL_ROOT_PASSWORD=root
-            - MYSQL_DATABASE=lumiere
+            - "33060:3306"

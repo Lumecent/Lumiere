@@ -1,23 +1,20 @@
-FROM php:8.1-fpm
+FROM php:8.3-fpm
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-ARG PUID=1001
-ENV PUID ${PUID}
-ARG PGID=1001
-ENV PGID ${PGID}
-
-RUN groupadd -g ${PGID} docker && \
-    useradd -u ${PUID} -g docker -m docker -G docker && \
-    usermod -p "*" docker -s /bin/bash
+WORKDIR /var/www/app
 
 RUN apt-get update && apt-get upgrade -y && apt-get install apt-utils -y \
-    && install-php-extensions zip gd xdebug pdo pdo_mysql \
+    && install-php-extensions zip gd xdebug pdo pdo_mysql openssl \
     && docker-php-ext-enable xdebug \
     && docker-php-source delete \
     && apt-get autoremove --purge -y \
     && apt-get autoclean -y \
     && apt-get clean -y
+
+RUN chown -R www-data:www-data /var/www/app
+
+RUN chmod -R 755 /var/www/app
 
 EXPOSE 9000

@@ -14,7 +14,7 @@ services:
             - mysql
 
     nginx:
-        image: nginx
+        image: nginx:latest
         container_name: lumiere_nginx
         restart: always
         working_dir: /var/www/app
@@ -25,8 +25,12 @@ services:
             - php
 
     mysql:
-        image: mariadb:10.6.4
+        image: mariadb:latest
         container_name: lumiere_mysql
         restart: always
         volumes:
-            - .././_db-data:/var/lib/mysql/
+            - .././_db-data:/var/lib/mysql
+        environment:
+            - MYSQL_USER=${MYSQL_USER}
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_DATABASE=${MYSQL_DATABASE}

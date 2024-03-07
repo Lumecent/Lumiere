@@ -2,22 +2,37 @@
 
 env=$1
 
-if [ "$env" != "" ]; then
-  if [ "$env" != "development" ] || [ "$env" != "production" ]; then
-      return
-  fi
-fi
-
 if [ ! -f .env ]; then
     cp .env.example .env
 
-    env=development
+    if [ "$env" = "" ]; then
+      env=development
+    fi
+
+    read -p "Enter DB user name: " db_user
+    if [ "$db_user" != "" ]; then
+        sed -i "s/MYSQL_USER=.*/MYSQL_USER=$db_user/" .env
+    fi
+
+    read -p "Enter DB user password: " db_password
+    if [ "$db_password" != "" ]; then
+        sed -i "s/MYSQL_ROOT_PASSWORD=.*/MYSQL_ROOT_PASSWORD=$db_password/" .env
+    fi
+
+    read -p "Enter DB name: " db_database
+    if [ "$db_database" != "" ]; then
+        sed -i "s/MYSQL_DATABASE=.*/MYSQL_DATABASE=$db_database/" .env
+    fi
 fi
 
 if [ ! -f ../.env ]; then
+    source ".env"
+
     cp ../.env.example ../.env
 
-    env=development
+    sed -i "s/DB_USERNAME=.*/DB_USERNAME=$MYSQL_USER/" ../.env
+    sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$MYSQL_ROOT_PASSWORD/" ../.env
+    sed -i "s/DB_DATABASE=.*/DB_DATABASE=$MYSQL_DATABASE/" ../.env
 fi
 
 if [ "$env" != "" ]; then
@@ -26,13 +41,20 @@ if [ "$env" != "" ]; then
     sed -i "s/APP_ENV=.*/APP_ENV=$env/" ../.env
 fi
 
-docker-compose up -d --build --remove-orphans
+if [ "$env" = "" ]; then
+    . ../.env
+    env=$APP_ENV
+fi
 
-docker-compose exec php sh -c "chown -R www-data:www-data /var/www/app"
+docker-compose up -d --build --remove-orphans
 
 docker-compose exec mysql sh -c "chown -R mysql:mysql var/lib/mysql/"
 
 sleep 10
+
+chmod +x ./artisan
+chmod +x ./composer
+chmod +x ./lumiere
 
 docker-compose exec php sh -c "composer install"
 
@@ -40,6 +62,6 @@ docker-compose exec php sh -c "php artisan migrate --force"
 
 docker-compose exec php sh -c "php artisan optimize:clear"
 
-if [ "$env" == "development" ]; then
-    docker-compose exec php sh -c "php artisan db:seed"
+if [ "$env" = "development" ]; then
+    docker-compose exec php sh -c "composer outdated -D"
 fi
