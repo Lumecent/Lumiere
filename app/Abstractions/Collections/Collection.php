@@ -2,7 +2,7 @@
 
 namespace App\Abstractions\Collections;
 
-use Illuminate\Database\Eloquent\Collection as IlluminateCollection;
+use Illuminate\Support\Collection as IlluminateCollection;
 
 class Collection extends IlluminateCollection
 {

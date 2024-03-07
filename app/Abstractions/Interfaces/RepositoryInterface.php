@@ -2,20 +2,20 @@
 
 namespace App\Abstractions\Interfaces;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+
+use App\Abstractions\Collections\ModelsCollection;
+use App\Abstractions\Database\Builders\Builder;
+use App\Abstractions\Database\Models\Model;
 
 interface RepositoryInterface
 {
     public function query(): Builder;
 
-    public function findById( int $id, array $columns = [ '*' ] ): ?Model;
+    public function findById( int $id, array $relations = [], array $columns = [ '*' ] ): ?Model;
 
-    public function findByIdOrFail( int $id, array $columns = [ '*' ] ): ?Model;
+    public function findByIdWithTrashed( int $id, array $relations = [], array $columns = [ '*' ] ): ?Model;
 
-    public function findByIdOrError( int $id, array $columns = [ '*' ] ): ?Model;
+    public function findByUserId( int $userId, array $relations = [], array $columns = [ '*' ] ): ?Model;
 
-    public function findByIdWithRelations( int $id, string|array $relation, array $columns = [ '*' ] ): ?Model;
-
-    public function findByUserId( int $userId, array $columns = [ '*' ] ): ?Model;
+    public function getByUserId( int $userId, array $relations = [], array $columns = [ '*' ] ): ModelsCollection;
 }

@@ -2,12 +2,15 @@
 
 namespace App\Abstractions\Exception;
 
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 abstract class Exception extends \Exception
 {
-    public function __construct(string $message, int $code = 500, ?Throwable $exception = null)
+    public function __construct( string $message, int $code = 500, ?Throwable $exception = null )
     {
-        return parent::__construct($message, $code, $exception);
+        Log::error( 'log', [ $message ] );
+
+        return parent::__construct( $message, $code, $exception );
     }
 }
