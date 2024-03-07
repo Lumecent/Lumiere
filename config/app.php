@@ -175,6 +175,9 @@ return [
         // App\Base\Providers\BroadcastServiceProvider::class,
         App\Base\Providers\EventServiceProvider::class,
         App\Base\Providers\RouteServiceProvider::class,
+
+        App\Containers\AuthSession\Providers\AuthSessionServiceProvider::class,
+        App\Containers\User\Providers\UserServiceProvider::class,
     ],
 
     /*
